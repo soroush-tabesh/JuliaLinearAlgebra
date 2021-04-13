@@ -20,8 +20,8 @@ P = Matrix(hcat(P...)')
 
 last_P = I
 d = zeros(Int32, n)
-eps = 1e-12
-for t = 1:(n+2)
+eps = 1e-14
+for t = 1:(2*n+2)
     global last_P = last_P * P
     for i = 1:n
         if last_P[i, i] > eps
