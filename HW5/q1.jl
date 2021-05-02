@@ -111,8 +111,10 @@ end
 ##
 
 cluss, er, t = kmeans_clusterin(collect((blobs)'), 3)
+# clusst= kmeans(collect((blobs)'), 3)
 
 show_scatter(blobs, cluss)
+# show_scatter(blobs, clusst.assignments)
 
 ##
 elbow = [kmeans_clusterin(collect((blobs)'), i)[2] for i = 1:10]
