@@ -117,9 +117,21 @@ show_scatter(blobs, cluss)
 # show_scatter(blobs, clusst.assignments)
 
 ##
-elbow = [kmeans_clusterin(collect((blobs)'), i)[2] for i = 1:10]
+errs = [kmeans_clusterin(collect((blobs)'), i)[2] for i = 1:10]
+display(plot(errs))
+elbow = errs[1:end-1] - errs[2:end]
 display(plot(elbow))
-display(plot(elbow[1:end-1] - elbow[2:end]))
+function first_local_minima(arr)
+    n = length(arr)
+    for i=2:n-1
+        if arr[i] < arr[i-1] && arr[i] < arr[i+1]
+            return i
+        end
+    end
+    return findmin(arr)[2]
+end
+
+print(first_local_minima(elbow))
 ##
 function silhouette_score(X, assignments)
     n = size(X)[2]
@@ -151,3 +163,4 @@ silo = [
     ) for i = 1:10
 ]
 display(plot(silo))
+print(findmax(silo)[2])
