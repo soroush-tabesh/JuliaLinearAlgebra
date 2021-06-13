@@ -88,7 +88,7 @@ function BVLS(A, b, l, u, max_iter = 2 * size(A)[2], eps = 1e-12)
         pop!(L, ts, nothing)
         pop!(U, ts, nothing)
         push!(F, ts)
-        println(length(F), " ", ts, " ", w[ts], " ", x[ts])
+        # println(length(F), " ", ts, " ", w[ts], " ", x[ts])
 
         B = collect(union(U, L))
         bp = vec(b - A[:, B] * x[B])
