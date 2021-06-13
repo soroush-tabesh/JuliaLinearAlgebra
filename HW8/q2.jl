@@ -56,7 +56,6 @@ function BVLS_GD(A, b, l, u, max_iter = 10000, eps = 1e-8, rate = 0.01)
     end
     return x
 end
-
 function BVLS(A, b, l, u, max_iter = 2 * size(A)[2], eps = 1e-12)
     m, n = size(A)
     F = Set([])
@@ -76,11 +75,13 @@ function BVLS(A, b, l, u, max_iter = 2 * size(A)[2], eps = 1e-12)
             break
         end
 
+        # Find critical variables which are not ignored
         T = setdiff(union(U, L), ign)
         if length(T) == 0
             break
         end
 
+        # Extract critical variable with highest outward gradient
         sg = zeros(n)
         sg[collect(L)] .= 1
         sg[collect(U)] .= -1
@@ -88,18 +89,20 @@ function BVLS(A, b, l, u, max_iter = 2 * size(A)[2], eps = 1e-12)
         pop!(L, ts, nothing)
         pop!(U, ts, nothing)
         push!(F, ts)
-        # println(length(F), " ", ts, " ", w[ts], " ", x[ts])
 
+        # least squares on free variables
         B = collect(union(U, L))
         bp = vec(b - A[:, B] * x[B])
         Ap = A[:, collect(F)]
         z = Ap \ bp
 
+        # if all free variables have optimal values inside the feasible set, we're done
         if all(z .> l) && all(z .< u)
             x[collect(F)] .= z
             continue
         end
 
+        # limit solution to the bounds
         α = Inf
         for jp = 1:length(z)
             j = collect(F)[jp]
@@ -113,12 +116,14 @@ function BVLS(A, b, l, u, max_iter = 2 * size(A)[2], eps = 1e-12)
             end
         end
 
+        # if bounding is too small, ignore this new free variable
         if α < eps
             push!(ign,ts)
         else
             ign = []
         end
 
+        # update free and critical variables
         Fnew = copy(F)
         for jp = 1:length(z)
             j = collect(F)[jp]
@@ -135,7 +140,6 @@ function BVLS(A, b, l, u, max_iter = 2 * size(A)[2], eps = 1e-12)
     end
     return x
 end
-
 ##
 p = BVLS(A, b, 0.0, 1.0)
 norm(A * p - b)
