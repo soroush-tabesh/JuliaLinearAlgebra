@@ -1,7 +1,7 @@
 using LinearAlgebra
 
 m = parse(Int, strip(readline()))
-A = [parse.(Float64, split(readline())) for i = 1:n]
+A = [parse.(Float64, split(readline())) for i = 1:m]
 A = collect(hcat(A...)')
 b = parse.(Float64, split(strip(readline())))
 n = length(b)
