@@ -60,7 +60,7 @@ U, V, err = MF_ALS(rpos, r, 14)
 ucorr = U * U'
 sortperm(ucorr[78, :], rev = true)[2:11]
 ##
-U, V, err = MF_ALS(rpos, r, 4)
+U, V, err = MF_ALS(rpos, r, 3)
 errs = []
 for k = 2:20
     # dists = [norm(V[i,:]-V[j,:]) for i=1:40,j =1:40]
@@ -70,4 +70,8 @@ for k = 2:20
 end
 plot(errs)
 ##
-kmeans(collect(V'), 2)
+asg = kmeans(collect(V'), 6).assignments
+for i=1:6
+    println(findall(asg.==i))
+end
+println()
