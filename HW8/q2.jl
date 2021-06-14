@@ -2,22 +2,23 @@ using LinearAlgebra, DelimitedFiles
 
 data = readdlm("./HW8/data/Q2/data1.txt")
 l = data[1:70, :]
-v = data[end-50:end-1, :]
-intensity = data[end, 1]
+v = data[71:121, :]
+intensity = data[122, 1]
 ##
 mids = (v+circshift(v, (-1, 0)))[1:end-1, :] ./ 2
 normals = (circshift(v, (-1, 0))-v)[1:end-1, :] * [0 1; -1 0]
 A = zeros((50, 70))
+b = ones(50) .* intensity
+
 for i = 1:50
     for j = 1:70
-        d = l[j] - mids[i]
-        A[i, j] = (normals[i] ⋅ d) / (norm(d) * norm(normals[i]))
+        d = l[j, :] - mids[i, :]
+        A[i, j] = (normals[i, :] ⋅ d) / (norm(d) * norm(normals[i, :]))
         A[i, j] = max(A[i, j], 0) / (norm(d)^2)
     end
 end
 ##
 # intensity = parse(Int, strip(readline()))
-b = ones(50) .* intensity
 
 function BVLS_GD(A, b, l, u, max_iter = 10000, eps = 1e-8, rate = 0.01)
     m, n = size(A)
@@ -118,7 +119,7 @@ function BVLS(A, b, l, u, max_iter = 2 * size(A)[2], eps = 1e-12)
 
         # if bounding is too small, ignore this new free variable
         if α < eps
-            push!(ign,ts)
+            push!(ign, ts)
         else
             ign = []
         end
